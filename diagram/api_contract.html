@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hire Sphere - API Contract</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        background-color: #f4f7f9;
+        color: #333;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 40px;
+      }
+
+      .api-container {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center; /* center the sections */
+      }
+
+      .api-section {
+        background-color: #ffffff;
+        border: 1px solid #e0e6ed;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        flex: 1 1 400px; /* narrower width */
+        max-width: 450px; /* limit max width */
+        min-width: 300px;
+      }
+
+      .section-title {
+        background-color: #34495e;
+        color: white;
+        padding: 15px 20px;
+        font-size: 1.5em;
+        font-weight: 600;
+      }
+
+      .section-title code {
+        font-family: "Courier New", Courier, monospace;
+        background-color: rgba(0, 0, 0, 0.2);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+
+      .endpoint {
+        border-bottom: 1px solid #ecf0f1;
+        padding: 20px;
+      }
+      .endpoint:last-child {
+        border-bottom: none;
+      }
+
+      .endpoint-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+      }
+
+      .http-method {
+        padding: 5px 12px;
+        border-radius: 5px;
+        color: white;
+        font-weight: bold;
+        font-size: 1em;
+        margin-right: 15px;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+      }
+
+      .post {
+        background-color: #27ae60;
+      }
+      .get {
+        background-color: #2980b9;
+      }
+      .patch {
+        background-color: #f39c12;
+      }
+      .delete {
+        background-color: #c0392b;
+      }
+
+      .endpoint-url {
+        font-family: "Courier New", Courier, monospace;
+        font-size: 1.1em;
+        color: #2c3e50;
+        font-weight: 600;
+      }
+
+      .endpoint-desc {
+        margin-left: 75px;
+        margin-top: -10px;
+        margin-bottom: 20px;
+        color: #7f8c8d;
+      }
+
+      .data-block {
+        margin-left: 75px;
+        border-left: 3px solid #ecf0f1;
+        padding-left: 20px;
+      }
+
+      .data-block h4 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        color: #34495e;
+      }
+
+      .code-box {
+        background-color: #ecf0f1;
+        border-radius: 5px;
+        padding: 15px;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 0.9em;
+        white-space: pre-wrap;
+        color: #333;
+      }
+
+      .success {
+        border-left-color: #27ae60;
+      }
+      .error {
+        border-left-color: #c0392b;
+      }
+
+      .auth-required {
+        font-size: 0.8em;
+        font-weight: bold;
+        color: #c0392b;
+        margin-left: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Hire Sphere - API Contract</h1>
+
+    <div class="api-container">
+      <!-- Left Side: Authentication API -->
+      <div class="api-section">
+        <div class="section-title">
+          Authentication API <code>/api/auth</code>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-header">
+            <span class="http-method post">POST</span>
+            <span class="endpoint-url">/signup</span>
+          </div>
+          <p class="endpoint-desc">Registers a new user.</p>
+          <div class="data-block">
+            <h4>Request Body:</h4>
+            <div class="code-box">
+              { "name": "string", "email": "string", "password": "string" }
+            </div>
+          </div>
+          <div class="data-block success" style="margin-top: 15px">
+            <h4>Success Response (201 Created):</h4>
+            <div class="code-box">
+              { "token": "string (JWT)", "user": { "id": "string", "name":
+              "string" } }
+            </div>
+          </div>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-header">
+            <span class="http-method post">POST</span>
+            <span class="endpoint-url">/login</span>
+          </div>
+          <p class="endpoint-desc">Authenticates a user and returns a token.</p>
+          <div class="data-block">
+            <h4>Request Body:</h4>
+            <div class="code-box">
+              { "email": "string", "password": "string" }
+            </div>
+          </div>
+          <div class="data-block success" style="margin-top: 15px">
+            <h4>Success Response (200 OK):</h4>
+            <div class="code-box">
+              { "token": "string (JWT)", "user": { "id": "string", "name":
+              "string" } }
+            </div>
+          </div>
+          <div class="data-block error" style="margin-top: 15px">
+            <h4>Error Response (401 Unauthorized):</h4>
+            <div class="code-box">{ "error": "Invalid credentials." }</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side: User Profile API -->
+      <div class="api-section">
+        <div class="section-title">
+          User Profile API <code>/api/users</code>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-header">
+            <span class="http-method get">GET</span>
+            <span class="endpoint-url">/:id</span>
+          </div>
+          <p class="endpoint-desc">
+            Retrieves the public profile for a specific user.
+          </p>
+          <div class="data-block success">
+            <h4>Success Response (200 OK):</h4>
+            <div class="code-box">
+              { "id": "string", "name": "string", "headline": "string",
+              "summary": "string", "experiences": [], "education": [] }
+            </div>
+          </div>
+        </div>
+
+        <div class="endpoint">
+          <div class="endpoint-header">
+            <span class="http-method patch">PATCH</span>
+            <span class="endpoint-url">/me</span>
+            <span class="auth-required">(Auth Required)</span>
+          </div>
+          <p class="endpoint-desc">
+            Updates the profile of the currently authenticated user.
+          </p>
+          <div class="data-block">
+            <h4>Request Body:</h4>
+            <div class="code-box">
+              { "headline": "string (optional)", "summary": "string (optional)"
+              }
+            </div>
+          </div>
+          <div class="data-block success" style="margin-top: 15px">
+            <h4>Success Response (200 OK):</h4>
+            <div class="code-box">
+              { /* Full updated user profile object */ }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

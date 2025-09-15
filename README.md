@@ -23,9 +23,15 @@
 
 ---
 
-### Database Design
+### class Design
 
-[View Database Design Online](https://017-anamika.github.io/Hire_Sphere/database_design.html)
+![class Diagram](assets/class_dia.png)
+
+---
+
+### API Contract
+
+![Api-endpoints](assets/api_contract.png)
 
 ---
 

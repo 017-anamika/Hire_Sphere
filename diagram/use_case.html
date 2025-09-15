@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hire Sphere - Final Use Case Diagram</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        .diagram-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 40px;
+            position: relative;
+        }
+        
+        .actor-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 150px;
+        }
+
+        .actor {
+            text-align: center;
+        }
+
+        .actor-icon {
+            font-size: 3em;
+        }
+
+        .actor-name {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .system-boundary {
+            border: 2px dashed #34495e;
+            border-radius: 10px;
+            padding: 20px 40px;
+            text-align: center;
+            flex-grow: 1;
+            margin: 0 50px;
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
+        .system-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #34495e;
+            margin-bottom: 25px;
+        }
+
+        .use-case-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .use-case {
+            border: 1px solid #bdc3c7;
+            background-color: #ecf0f1;
+            border-radius: 50px; /* oval shape */
+            padding: 12px 20px;
+            font-size: 1em;
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        .use-case.auth {
+            grid-column: 1 / -1; /* Span full width */
+            border-style: dotted;
+            border-color: #3498db;
+        }
+
+        .note {
+            font-style: italic;
+            color: #3498db;
+            font-size: 0.9em;
+        }
+        
+        .rationale {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 25px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            text-align: left;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Hire Sphere - Final Use Case Diagram</h1>
+
+    <div class="diagram-container">
+        
+        <div class="actor-column">
+            <div class="actor">
+                <div class="actor-icon">👤</div>
+                <div class="actor-name">User / Professional</div>
+            </div>
+        </div>
+
+        <div class="system-boundary">
+            <div class="system-name">Hire Sphere System</div>
+            <ul class="use-case-list">
+                <li class="use-case">Manage Profile</li>
+                <li class="use-case">View Feed & Content</li>
+                <li class="use-case">Manage Network</li>
+                <li class="use-case">Search (Jobs, People)</li>
+                <li class="use-case">Interact with Content</li>
+                <li class="use-case">Use Messaging</li>
+                <li class="use-case">Apply for Job</li>
+                <li class="use-case">Post a Job <span class="note">&lt;&lt;extend&gt;&gt;</span></li>
+                <li class="use-case auth">Authenticate User <span class="note">&lt;&lt;include&gt;&gt;</span></li>
+            </ul>
+        </div>
+        
+        <div class="actor-column">
+             <div class="actor">
+                <div class="actor-icon">🕴️</div>
+                <div class="actor-name">Recruiter</div>
+            </div>
+             <div class="actor" style="margin-top: 80px;">
+                <div class="actor-icon">⚙️</div>
+                <div class="actor-name">System Admin</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="rationale">
+        <h2>Diagram Rationale & Explanation</h2>
+        <p>This final Use Case Diagram defines the complete functional scope required for a perfect application foundation. It introduces multiple actors and standard UML relationships to ensure clarity.</p>
+        <ul>
+            <li><strong>Actors:</strong>
+                <ul>
+                    <li><strong>User / Professional:</strong> The primary actor. They perform all core social networking activities.</li>
+                    <li><strong>Recruiter:</strong> A specialized user. They can do everything a User can, but also have extended capabilities like posting jobs and searching for candidates with advanced filters.</li>
+                    <li><strong>System Admin:</strong> A privileged actor responsible for system maintenance, like moderating content or managing users.</li>
+                </ul>
+            </li>
+            <li><strong>Use Cases (Core Functionality):</strong>
+                <ul>
+                    <li><strong>Manage Profile:</strong> Encompasses creating, editing, and updating all profile sections (experience, skills, etc.).</li>
+                    <li><strong>Manage Network:</strong> Includes sending, accepting, and removing connections.</li>
+                    <li><strong>Interact with Content:</strong> Covers liking and commenting on posts.</li>
+                </ul>
+            </li>
+            <li><strong>Relationships:</strong>
+                <ul>
+                    <li><strong>`<<include>>` (Authenticate User):</strong> This is a powerful concept. It signifies that most other use cases (like posting content or applying for a job) *must* include the "Authenticate User" step. This tells the developer that authentication is a core, reusable piece of middleware that will be applied to many different API routes.</li>
+                    <li><strong>`<<extend>>` (Post a Job):</strong> This indicates optional functionality. A `Recruiter` might have the primary use case to "Search for People," but they can *extend* that with the "Post a Job" functionality if they choose. It separates core features from optional or specialized ones.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+</body>
+</html>

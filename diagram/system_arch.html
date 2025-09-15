@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hire Sphere - Final System Architecture</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        .architecture-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 1400px;
+            position: relative;
+        }
+
+        .tier {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            border-right: 2px dashed #bdc3c7;
+        }
+        .tier:last-child {
+            border-right: none;
+        }
+
+        .tier-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+
+        .component {
+            background-color: #ffffff;
+            border: 1px solid #e0e6ed;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 20px;
+            width: 200px;
+            text-align: center;
+        }
+        
+        .component h3 {
+            margin-top: 0;
+            color: #3498db;
+        }
+        
+        .component.db h3 { color: #9b59b6; }
+        .component.service h3 { color: #f39c12; }
+        .component.client h3 { color: #2ecc71; }
+        
+        .component p {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 0;
+        }
+
+        .arrow {
+            position: absolute;
+            color: #34495e;
+            font-weight: bold;
+            font-size: 0.8em;
+            text-align: center;
+        }
+
+        .arrow::after {
+            content: '→';
+            font-size: 2em;
+            display: block;
+            margin-top: -10px;
+        }
+        
+        /* Arrow Positioning */
+        .a1 { top: 150px; left: 19%; } /* Client to Server */
+        .a2 { top: 350px; left: 19%; font-size: 1.2em; } /* WebSocket */
+        .a3 { top: 150px; left: 44%; } /* Server to DB */
+        .a4 { top: 350px; left: 44%; } /* Server to Redis */
+        .a5 { top: 150px; left: 69%; } /* Server to Cloudinary */
+        .a6 { top: 350px; left: 69%; } /* Server to Email */
+
+        .rationale {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 25px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Hire Sphere - Final System Architecture Diagram</h1>
+
+    <div class="architecture-container">
+        
+        <div class="tier">
+            <div class="tier-title">Client-Side</div>
+            <div class="component client">
+                <h3>User's Browser</h3>
+                <p>React (Vite) Single Page Application served via CDN (Vercel/Netlify).</p>
+            </div>
+        </div>
+
+        <div class="tier">
+            <div class="tier-title">Application Server (Backend)</div>
+            <div class="component">
+                <h3>Load Balancer</h3>
+                <p>Distributes traffic, handles SSL.</p>
+            </div>
+            <div class="component">
+                <h3>Node.js / Express API</h3>
+                <p>Core business logic, JWT Auth, serves REST API endpoints.</p>
+            </div>
+            <div class="component">
+                <h3>Socket.IO Server</h3>
+                <p>Manages persistent WebSocket connections for real-time chat & notifications.</p>
+            </div>
+        </div>
+
+        <div class="tier">
+            <div class="tier-title">Data Stores</div>
+            <div class="component db">
+                <h3>MongoDB</h3>
+                <p>Primary database for users, posts, messages, etc. (using Mongoose).</p>
+            </div>
+            <div class="component db">
+                <h3>Redis</h3>
+                <p>1. Caching Layer<br>2. Queue for background jobs (BullMQ).</p>
+            </div>
+        </div>
+
+        <div class="tier">
+            <div class="tier-title">Third-Party Services</div>
+            <div class="component service">
+                <h3>Cloudinary</h3>
+                <p>Stores and serves all user-uploaded media (profile pictures, post images).</p>
+            </div>
+            <div class="component service">
+                <h3>Email Service</h3>
+                <p>Sends transactional emails (e.g., SendGrid, AWS SES) for notifications and password resets.</p>
+            </div>
+        </div>
+
+        <div class="arrow a1">REST API Calls<br>(HTTPS)</div>
+        <div class="arrow a2">WebSocket<br>Connection</div>
+        <div class="arrow a3">Database Queries</div>
+        <div class="arrow a4">Cache & Jobs</div>
+        <div class="arrow a5">Image Uploads</div>
+        <div class="arrow a6">Send Email Jobs</div>
+
+    </div>
+
+    <div class="rationale">
+        <h2>Design Rationale & Data Flow</h2>
+        <p>This architecture is designed for scalability, performance, and maintainability.</p>
+        <ol>
+            <li>A <strong>User</strong> interacts with the <strong>React App</strong> in their browser, which is loaded quickly from a CDN.</li>
+            <li>For most actions (fetching profiles, creating posts), the React App makes secure <strong>REST API calls</strong> (HTTPS) to the <strong>Node.js API Server</strong> through a <strong>Load Balancer</strong>.</li>
+            <li>The Node.js server processes the request. It reads/writes user data from/to the primary <strong>MongoDB</strong> database.</li>
+            <li>To speed up frequent requests, the server checks for cached data in <strong>Redis</strong> before querying MongoDB.</li>
+            <li>When a user uploads a profile picture, the server handles the request and stores the file on <strong>Cloudinary</strong>, saving only the URL in the database.</li>
+            <li>For long-running tasks like sending a welcome email, the server pushes a job to a queue in <strong>Redis</strong>, which is processed by a separate worker, preventing delays for the user.</li>
+            <li>For real-time chat and notifications, the client maintains a persistent <strong>WebSocket connection</strong> with the dedicated <strong>Socket.IO Server</strong>.</li>
+        </ol>
+    </div>
+
+</body>
+</html>
