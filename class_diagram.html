@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hire Sphere - Advanced Class Diagram</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #1a1a1a;
+        }
+
+        .diagram-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .class-box {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            width: 300px;
+            overflow: hidden;
+        }
+
+        .class-name {
+            background-color: #2c3e50;
+            color: white;
+            padding: 12px 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        /* Style for Abstract Classes */
+        .abstract .class-name {
+            background-color: #7f8c8d;
+            font-style: italic;
+        }
+        .abstract {
+             border: 2px dashed #7f8c8d;
+        }
+        .abstract .class-name::after {
+            content: ' <<Abstract>>';
+            font-weight: normal;
+            font-size: 0.8em;
+        }
+        
+        /* Style for Association Classes */
+        .association .class-name {
+            background-color: #f39c12;
+        }
+        .association {
+            border: 2px solid #f39c12;
+        }
+        .association .class-name::after {
+            content: ' <<Association>>';
+            font-weight: normal;
+            font-size: 0.8em;
+        }
+
+        .properties, .methods {
+            padding: 15px;
+            list-style: none;
+            margin: 0;
+            font-size: 0.95em;
+        }
+
+        .properties {
+            border-bottom: 1px solid #eee;
+        }
+
+        .properties li, .methods li {
+            padding: 6px 0;
+        }
+        
+        .properties li::before {
+            content: '• ';
+            color: #2c3e50;
+        }
+
+        .methods li::before {
+            content: '() ';
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .section {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 25px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .section h2 {
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .section ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .section li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .section li:last-child {
+            border-bottom: none;
+        }
+        
+        .section strong {
+            display: inline-block;
+            width: 150px;
+            font-weight: 600;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Hire Sphere - Advanced Class Diagram</h1>
+
+    <div class="diagram-container">
+        
+        <div class="class-box abstract">
+            <div class="class-name">Member</div>
+            <ul class="properties"><li>+UUID id</li><li>+String name</li><li>+String email</li></ul>
+            <ul class="methods"><li>search(query)</li><li>sendMessage(to, msg)</li></ul>
+        </div>
+        <div class="class-box"><div class="class-name">User</div>
+            <ul class="properties"><li>+String password_hash</li><li>+String headline</li></ul>
+            <ul class="methods"><li>sendConnectionRequest()</li><li>acceptConnectionRequest()</li></ul>
+        </div>
+        <div class="class-box"><div class="class-name">Company</div>
+            <ul class="properties"><li>+String description</li><li>+String logo_url</li></ul>
+            <ul class="methods"><li>postJob(details)</li></ul>
+        </div>
+        <div class="class-box association"><div class="class-name">Connection</div>
+            <ul class="properties"><li>+Enum status</li></ul>
+        </div>
+        <div class="class-box"><div class="class-name">Profile</div>
+            <ul class="properties"><li>+String summary</li></ul>
+            <ul class="methods"><li>updateExperience()</li><li>addSkill()</li></ul>
+        </div>
+        <div class="class-box"><div class="class-name">Experience</div>
+            <ul class="properties"><li>+String title</li><li>+String companyName</li><li>+Date startDate</li></ul>
+        </div>
+        <div class="class-box"><div class="class-name">Education</div>
+            <ul class="properties"><li>+String school</li><li>+String degree</li></ul>
+        </div>
+        <div class="class-box"><div class="class-name">Skill</div>
+            <ul class="properties"><li>+String skillName</li><li>+Number endorsementCount</li></ul>
+        </div>
+        <div class="class-box abstract"><div class="class-name">Content</div>
+            <ul class="properties"><li>+UUID id</li><li>+String textContent</li><li>+DateTime createdAt</li></ul>
+        </div>
+        <div class="class-box"><div class="class-name">Post</div>
+            <ul class="properties"><li>+String[] mediaUrls</li></ul>
+        </div>
+        <div class="class-box"><div class="class-name">Comment</div>
+            <ul class="properties"><li>+Comment parentComment</li></ul>
+        </div>
+        <div class="class-box abstract"><div class="class-name">Reaction</div>
+            <ul class="properties"><li>+UUID id</li><li>+Enum type</li></ul>
+        </div>
+        <div class="class-box"><div class="class-name">Like</div>
+            <ul class="properties"><li>(Inherits from Reaction)</li></ul>
+        </div>
+        <div class="class-box"><div class="class-name">JobPosting</div>
+            <ul class="properties"><li>+UUID id</li><li>+String title</li><li>+String description</li></ul>
+            <ul class="methods"><li>apply(user, resume)</li></ul>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <h2>Design Rationale & Relationships</h2>
+        <ul>
+            <li>
+                <strong>Inheritance:</strong>
+                <span><b>User</b> and <b>Company</b> extend <b>Member</b>. This allows both to share common functionality like being searchable or creating content. <b>Post</b> and <b>Comment</b> extend <b>Content</b>.</span>
+            </li>
+            <li>
+                <strong>Composition:</strong>
+                <span><b>User (1) *-- (1) Profile</b>. A Profile is fundamentally part of a User and cannot exist without one. If a User is deleted, their Profile is also deleted. This is a strong "owns-a" relationship.</span>
+            </li>
+            <li>
+                <strong>Aggregation:</strong>
+                <span><b>Profile (1) o-- (0..*) Experience, Education, Skill</b>. A Profile "has-a" list of these items. They are part of the Profile, but their lifecycle is not strictly tied to the Profile. This is a weaker "has-a" relationship.</span>
+            </li>
+            <li>
+                <strong>Association:</strong>
+                <span><b>Member (1) -- (0..*) Content</b>. A Member (User or Company) can create many pieces of Content.</span>
+            </li>
+            <li>
+                <strong>Association Class:</strong>
+                <span><b>User (2) -- (Connection)</b>. The `Connection` class holds attributes about the relationship between two Users, such as its `status` (pending/accepted).</span>
+            </li>
+            <li>
+                <strong>Self-Association:</strong>
+                <span><b>Comment (1) -- (0..*) Comment</b>. A Comment can be a reply to another Comment, creating nested threads.</span>
+            </li>
+        </ul>
+    </div>
+
+</body>
+</html>

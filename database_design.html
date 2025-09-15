@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hire Sphere - Final Database Design (ERD)</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #f4f7f9;
+            color: #2c3e50;
+            padding: 25px;
+            line-height: 1.6;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #34495e;
+        }
+        .legend, .rationale {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #e0e6ed;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .legend-symbol {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-right: 15px;
+            width: 40px;
+        }
+        .diagram-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            position: relative;
+        }
+        .collection {
+            background-color: #ffffff;
+            border: 1px solid #e0e6ed;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+        }
+        .collection-name {
+            background-color: #3498db;
+            color: white;
+            padding: 15px;
+            font-size: 1.3em;
+            font-weight: 600;
+            text-align: center;
+            border-top-left-radius: 9px;
+            border-top-right-radius: 9px;
+        }
+        .collection.embedded .collection-name {
+            background-color: #9b59b6;
+        }
+        .fields {
+            padding: 15px;
+            list-style: none;
+            margin: 0;
+            flex-grow: 1;
+        }
+        .fields li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f4f7f9;
+            display: flex;
+            justify-content: space-between;
+        }
+        .field-name {
+            font-weight: 500;
+        }
+        .field-type {
+            color: #7f8c8d;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .field-key {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .pk { color: #e74c3c; }
+        .fk { color: #f39c12; }
+        .idx { color: #2ecc71; }
+
+        .note {
+            font-size: 0.8em;
+            color: #95a5a6;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Hire Sphere - Final Database Design (ERD for MongoDB)</h1>
+
+    <div class="legend">
+        <h2>Legend</h2>
+        <div class="legend-item"><span class="legend-symbol pk">PK</span> Primary Key - The unique identifier for a document.</div>
+        <div class="legend-item"><span class="legend-symbol fk">FK</span> Foreign Key (Reference) - An ID linking to a document in another collection.</div>
+        <div class="legend-item"><span class="legend-symbol idx">IDX</span> Indexed Field - A field that should be indexed for faster queries.</div>
+    </div>
+
+    <div class="diagram-container">
+        <div class="collection">
+            <div class="collection-name">users</div>
+            <ul class="fields">
+                <li><span class="field-name"><span class="pk">PK</span> _id</span> <span class="field-type">ObjectId</span></li>
+                <li><span class="field-name"><span class="idx">IDX</span> name</span> <span class="field-type">String</span></li>
+                <li><span class="field-name"><span class="idx">IDX</span> email</span> <span class="field-type">String (Unique)</span></li>
+                <li><span class="field-name">password_hash</span> <span class="field-type">String</span></li>
+                <li><span class="field-name"><span class="idx">IDX</span> headline</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">profile_pic_url</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">summary</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">experiences</span> <span class="field-type">Array[Experience]</span></li>
+                <li><span class="field-name">education</span> <span class="field-type">Array[Education]</span></li>
+                <li><span class="field-name">skills</span> <span class="field-type">Array[String]</span></li>
+                <li><span class="field-name">createdAt</span> <span class="field-type">Date</span></li>
+            </ul>
+        </div>
+
+        <div class="collection embedded">
+            <div class="collection-name">Experience (Embedded)</div>
+            <ul class="fields">
+                <li><span class="field-name">title</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">companyName</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">location</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">startDate</span> <span class="field-type">Date</span></li>
+                <li><span class="field-name">endDate</span> <span class="field-type">Date</span></li>
+                <li><span class="field-name">description</span> <span class="field-type">String</span></li>
+            </ul>
+        </div>
+        
+        <div class="collection embedded">
+            <div class="collection-name">Education (Embedded)</div>
+            <ul class="fields">
+                <li><span class="field-name">school</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">degree</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">fieldOfStudy</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">startDate</span> <span class="field-type">Date</span></li>
+                <li><span class="field-name">endDate</span> <span class="field-type">Date</span></li>
+            </ul>
+        </div>
+
+        <div class="collection">
+            <div class="collection-name">connections</div>
+            <ul class="fields">
+                <li><span class="field-name"><span class="pk">PK</span> _id</span> <span class="field-type">ObjectId</span></li>
+                <li><span class="field-name"><span class="fk">FK</span> requester_id</span> <span class="field-type">ObjectId</span><span class="note">ref: 'users'</span></li>
+                <li><span class="field-name"><span class="fk">FK</span> receiver_id</span> <span class="field-type">ObjectId</span><span class="note">ref: 'users'</span></li>
+                <li><span class="field-name"><span class="idx">IDX</span> status</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">createdAt</span> <span class="field-type">Date</span></li>
+            </ul>
+        </div>
+        
+        <div class="collection">
+            <div class="collection-name">posts</div>
+            <ul class="fields">
+                <li><span class="field-name"><span class="pk">PK</span> _id</span> <span class="field-type">ObjectId</span></li>
+                <li><span class="field-name"><span class="fk">FK</span> author_id</span> <span class="field-type">ObjectId</span><span class="note">ref: 'users'</span></li>
+                <li><span class="field-name">content</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">media_urls</span> <span class="field-type">Array[String]</span></li>
+                <li><span class="field-name">likeCount</span> <span class="field-type">Number</span></li>
+                <li><span class="field-name"><span class="idx">IDX</span> createdAt</span> <span class="field-type">Date</span></li>
+            </ul>
+        </div>
+        
+        <div class="collection">
+            <div class="collection-name">comments</div>
+            <ul class="fields">
+                <li><span class="field-name"><span class="pk">PK</span> _id</span> <span class="field-type">ObjectId</span></li>
+                <li><span class="field-name"><span class="fk">FK</span> post_id</span> <span class="field-type">ObjectId</span><span class="note">ref: 'posts'</span></li>
+                <li><span class="field-name"><span class="fk">FK</span> author_id</span> <span class="field-type">ObjectId</span><span class="note">ref: 'users'</span></li>
+                <li><span class="field-name"><span class="fk">FK</span> parent_comment_id</span> <span class="field-type">ObjectId</span><span class="note">ref: 'comments'</span></li>
+                <li><span class="field-name">content</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">likeCount</span> <span class="field-type">Number</span></li>
+                <li><span class="field-name">createdAt</span> <span class="field-type">Date</span></li>
+            </ul>
+        </div>
+        
+        <div class="collection">
+            <div class="collection-name">likes</div>
+            <ul class="fields">
+                <li><span class="field-name"><span class="pk">PK</span> _id</span> <span class="field-type">ObjectId</span></li>
+                <li><span class="field-name"><span class="fk">FK</span> user_id</span> <span class="field-type">ObjectId</span><span class="note">ref: 'users'</span></li>
+                <li><span class="field-name"><span class="idx">IDX</span> target_id</span> <span class="field-type">ObjectId</span></li>
+                <li><span class="field-name"><span class="idx">IDX</span> target_type</span> <span class="field-type">String</span><span class="note">'post' or 'comment'</span></li>
+                <li><span class="field-name">createdAt</span> <span class="field-type">Date</span></li>
+            </ul>
+        </div>
+
+        <div class="collection">
+            <div class="collection-name">conversations</div>
+            <ul class="fields">
+                <li><span class="field-name"><span class="pk">PK</span> _id</span> <span class="field-type">ObjectId</span></li>
+                <li><span class="field-name"><span class="idx">IDX</span> participants</span> <span class="field-type">Array[ObjectId]</span><span class="note">ref: 'users'</span></li>
+                <li><span class="field-name">lastMessageAt</span> <span class="field-type">Date</span></li>
+            </ul>
+        </div>
+        
+        <div class="collection">
+            <div class="collection-name">messages</div>
+            <ul class="fields">
+                <li><span class="field-name"><span class="pk">PK</span> _id</span> <span class="field-type">ObjectId</span></li>
+                <li><span class="field-name"><span class="fk">FK</span> conversation_id</span> <span class="field-type">ObjectId</span><span class="note">ref: 'conversations'</span></li>
+                <li><span class="field-name"><span class="fk">FK</span> sender_id</span> <span class="field-type">ObjectId</span><span class="note">ref: 'users'</span></li>
+                <li><span class="field-name">content</span> <span class="field-type">String</span></li>
+                <li><span class="field-name"><span class="idx">IDX</span> createdAt</span> <span class="field-type">Date</span></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="rationale">
+        <h2>Design Rationale</h2>
+        <p>This schema is designed for a balance of performance and scalability, which is critical for a social network application.</p>
+        <ul>
+            <li><strong>Users Collection:</strong> The central collection. Profile information like experience and education are embedded directly within the user document. This makes loading a user's entire profile page incredibly fast as it requires only one database read.</li>
+            <li><strong>Connections Collection:</strong> A separate collection to manage the many-to-many relationships between users. Indexing `requester_id` and `receiver_id` would be necessary to quickly find all connections for a user.</li>
+            <li><strong>Posts, Comments, Likes:</strong> These are kept in separate collections because a user can have thousands of them. Referencing them by ID (`author_id`, `post_id`) is more scalable than embedding them.</li>
+            <li><strong>Denormalization:</strong> To improve read performance for feeds, fields like `likeCount` are added directly to the `posts` and `comments` collections. These would be updated using database increments whenever a new 'like' document is created.</li>
+            <li><strong>Messaging:</strong> The conversation model is efficient. We can quickly find all conversations a user is in by querying the `participants` array. Then, we fetch the messages for a specific conversation.</li>
+        </ul>
+    </div>
+
+</body>
+</html>

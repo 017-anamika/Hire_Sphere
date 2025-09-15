@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hire Sphere - Final Database Design (ERD)</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #f4f7f9;
+            color: #2c3e50;
+            padding: 25px;
+            line-height: 1.6;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #34495e;
+        }
+        .legend {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #e0e6ed;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .legend-symbol {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-right: 15px;
+            width: 40px;
+        }
+        .diagram-container {
+            position: relative;
+            width: 100%;
+            max-width: 1600px;
+            height: 1100px; /* Adjusted height to fit diagram */
+            margin: 40px auto;
+        }
+        #erd-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        .collection {
+            background-color: #ffffff;
+            border: 1px solid #e0e6ed;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            width: 300px; /* Slightly narrower for better fit */
+            display: flex;
+            flex-direction: column;
+            position: absolute; /* Key for positioning */
+            z-index: 10;
+        }
+        .collection-name {
+            background-color: #3498db;
+            color: white;
+            padding: 15px;
+            font-size: 1.3em;
+            font-weight: 600;
+            text-align: center;
+            border-top-left-radius: 9px;
+            border-top-right-radius: 9px;
+        }
+        .collection.embedded .collection-name {
+            background-color: #9b59b6;
+        }
+        .fields {
+            padding: 15px;
+            list-style: none;
+            margin: 0;
+            flex-grow: 1;
+        }
+        .fields li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f4f7f9;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.95em; /* Minor size adjustment */
+        }
+        .field-name {
+            font-weight: 500;
+        }
+        .field-type {
+            color: #7f8c8d;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .field-key {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .pk { color: #e74c3c; }
+        .fk { color: #f39c12; }
+        .idx { color: #2ecc71; }
+        .note {
+            font-size: 0.8em;
+            color: #95a5a6;
+            margin-left: 10px;
+        }
+
+        /* --- Collection Positioning --- */
+        #users { top: 400px; left: 50%; transform: translateX(-50%); }
+        #experience { top: 820px; left: 25%; }
+        #education { top: 820px; left: 55%; }
+        #posts { top: 400px; left: 10%; }
+        #comments { top: 400px; left: -20%; }
+        #likes { top: 820px; left: -20%; }
+        #connections { top: 0; left: 50%; transform: translateX(-50%); }
+        #conversations { top: 400px; right: 10%; }
+        #messages { top: 400px; right: -20%; }
+
+    </style>
+</head>
+<body>
+
+    <h1>Hire Sphere - Final Database Design (ERD for MongoDB)</h1>
+
+    <div class="legend">
+        <div>
+            <h2>Legend</h2>
+            <div class="legend-item"><span class="legend-symbol pk">PK</span> Primary Key</div>
+            <div class="legend-item"><span class="legend-symbol fk">FK</span> Foreign Key (Reference)</div>
+            <div class="legend-item"><span class="legend-symbol idx">IDX</span> Indexed Field</div>
+        </div>
+        <div>
+            <h2>Relationships</h2>
+            <svg width="150" height="100">
+                <defs>
+                    <marker id="one-marker-legend" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M 0 0 L 0 10" stroke="#34495e" stroke-width="2" fill="none"></path></marker>
+                    <marker id="many-marker-legend" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10" stroke="#34495e" stroke-width="2" fill="none"></path></marker>
+                </defs>
+                <line x1="10" y1="20" x2="140" y2="20" stroke="#34495e" stroke-width="2" marker-start="url(#one-marker-legend)" marker-end="url(#many-marker-legend)"></line>
+                <text x="50" y="40" font-size="12">One-to-Many</text>
+                 <line x1="10" y1="70" x2="140" y2="70" stroke="#34495e" stroke-width="2" stroke-dasharray="4 4"></line>
+                 <text x="50" y="90" font-size="12">Embedded</text>
+            </svg>
+        </div>
+    </div>
+
+    <div class="diagram-container">
+        <svg id="erd-svg">
+            <defs>
+                <marker id="one-marker" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                    <path d="M 0 0 L 0 10" stroke="#34495e" stroke-width="2" fill="none"></path>
+                </marker>
+                <marker id="many-marker" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10" stroke="#34495e" stroke-width="2" fill="none"></path>
+                </marker>
+            </defs>
+        </svg>
+
+        <div id="users" class="collection">
+            <div class="collection-name">users</div>
+            <ul class="fields">
+                <li><span class="field-name"><span class="pk">PK</span> _id</span> <span class="field-type">ObjectId</span></li>
+                <li><span class="field-name"><span class="idx">IDX</span> name</span> <span class="field-type">String</span></li>
+                <li><span class="field-name"><span class="idx">IDX</span> email</span> <span class="field-type">String (Unique)</span></li>
+                <li><span class="field-name">password_hash</span> <span class="field-type">String</span></li>
+                <li><span class="field-name"><span class="idx">IDX</span> headline</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">profile_pic_url</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">summary</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">experiences</span> <span class="field-type">Array[Experience]</span></li>
+                <li><span class="field-name">education</span> <span class="field-type">Array[Education]</span></li>
+                <li><span class="field-name">skills</span> <span class="field-type">Array[String]</span></li>
+                <li><span class="field-name">createdAt</span> <span class="field-type">Date</span></li>
+            </ul>
+        </div>
+
+        <div id="experience" class="collection embedded">
+            <div class="collection-name">Experience (Embedded)</div>
+            <ul class="fields">
+                <li><span class="field-name">title</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">companyName</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">location</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">startDate</span> <span class="field-type">Date</span></li>
+                <li><span class="field-name">endDate</span> <span class="field-type">Date</span></li>
+                <li><span class="field-name">description</span> <span class="field-type">String</span></li>
+            </ul>
+        </div>
+        
+        <div id="education" class="collection embedded">
+            <div class="collection-name">Education (Embedded)</div>
+            <ul class="fields">
+                <li><span class="field-name">school</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">degree</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">fieldOfStudy</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">startDate</span> <span class="field-type">Date</span></li>
+                <li><span class="field-name">endDate</span> <span class="field-type">Date</span></li>
+            </ul>
+        </div>
+
+        <div id="connections" class="collection">
+            <div class="collection-name">connections</div>
+            <ul class="fields">
+                <li><span class="field-name"><span class="pk">PK</span> _id</span> <span class="field-type">ObjectId</span></li>
+                <li><span class="field-name"><span class="fk">FK</span> requester_id</span> <span class="field-type">ObjectId</span><span class="note">ref: 'users'</span></li>
+                <li><span class="field-name"><span class="fk">FK</span> receiver_id</span> <span class="field-type">ObjectId</span><span class="note">ref: 'users'</span></li>
+                <li><span class="field-name"><span class="idx">IDX</span> status</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">createdAt</span> <span class="field-type">Date</span></li>
+            </ul>
+        </div>
+        
+        <div id="posts" class="collection">
+            <div class="collection-name">posts</div>
+            <ul class="fields">
+                <li><span class="field-name"><span class="pk">PK</span> _id</span> <span class="field-type">ObjectId</span></li>
+                <li><span class="field-name"><span class="fk">FK</span> author_id</span> <span class="field-type">ObjectId</span><span class="note">ref: 'users'</span></li>
+                <li><span class="field-name">content</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">media_urls</span> <span class="field-type">Array[String]</span></li>
+                <li><span class="field-name">likeCount</span> <span class="field-type">Number</span></li>
+                <li><span class="field-name"><span class="idx">IDX</span> createdAt</span> <span class="field-type">Date</span></li>
+            </ul>
+        </div>
+        
+        <div id="comments" class="collection">
+            <div class="collection-name">comments</div>
+            <ul class="fields">
+                <li><span class="field-name"><span class="pk">PK</span> _id</span> <span class="field-type">ObjectId</span></li>
+                <li><span class="field-name"><span class="fk">FK</span> post_id</span> <span class="field-type">ObjectId</span><span class="note">ref: 'posts'</span></li>
+                <li><span class="field-name"><span class="fk">FK</span> author_id</span> <span class="field-type">ObjectId</span><span class="note">ref: 'users'</span></li>
+                <li><span class="field-name"><span class="fk">FK</span> parent_comment_id</span> <span class="field-type">ObjectId</span><span class="note">ref: 'comments'</span></li>
+                <li><span class="field-name">content</span> <span class="field-type">String</span></li>
+                <li><span class="field-name">likeCount</span> <span class="field-type">Number</span></li>
+                <li><span class="field-name">createdAt</span> <span class="field-type">Date</span></li>
+            </ul>
+        </div>
+        
+        <div id="likes" class="collection">
+            <div class="collection-name">likes</div>
+            <ul class="fields">
+                <li><span class="field-name"><span class="pk">PK</span> _id</span> <span class="field-type">ObjectId</span></li>
+                <li><span class="field-name"><span class="fk">FK</span> user_id</span> <span class="field-type">ObjectId</span><span class="note">ref: 'users'</span></li>
+                <li><span class="field-name"><span class="idx">IDX</span> target_id</span> <span class="field-type">ObjectId</span></li>
+                <li><span class="field-name"><span class="idx">IDX</span> target_type</span> <span class="field-type">String</span><span class="note">'post' or 'comment'</span></li>
+                <li><span class="field-name">createdAt</span> <span class="field-type">Date</span></li>
+            </ul>
+        </div>
+
+        <div id="conversations" class="collection">
+            <div class="collection-name">conversations</div>
+            <ul class="fields">
+                <li><span class="field-name"><span class="pk">PK</span> _id</span> <span class="field-type">ObjectId</span></li>
+                <li><span class="field-name"><span class="idx">IDX</span> participants</span> <span class="field-type">Array[ObjectId]</span><span class="note">ref: 'users'</span></li>
+                <li><span class="field-name">lastMessageAt</span> <span class="field-type">Date</span></li>
+            </ul>
+        </div>
+        
+        <div id="messages" class="collection">
+            <div class="collection-name">messages</div>
+            <ul class="fields">
+                <li><span class="field-name"><span class="pk">PK</span> _id</span> <span class="field-type">ObjectId</span></li>
+                <li><span class="field-name"><span class="fk">FK</span> conversation_id</span> <span class="field-type">ObjectId</span><span class="note">ref: 'conversations'</span></li>
+                <li><span class="field-name"><span class="fk">FK</span> sender_id</span> <span class="field-type">ObjectId</span><span class="note">ref: 'users'</span></li>
+                <li><span class="field-name">content</span> <span class="field-type">String</span></li>
+                <li><span class="field-name"><span class="idx">IDX</span> createdAt</span> <span class="field-type">Date</span></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const svg = document.getElementById('erd-svg');
+            const container = document.querySelector('.diagram-container');
+
+            const getAttachPoint = (elementId, side) => {
+                const el = document.getElementById(elementId);
+                const containerRect = container.getBoundingClientRect();
+                const elRect = el.getBoundingClientRect();
+
+                const x = elRect.left - containerRect.left;
+                const y = elRect.top - containerRect.top;
+
+                switch (side) {
+                    case 'top': return { x: x + elRect.width / 2, y: y };
+                    case 'bottom': return { x: x + elRect.width / 2, y: y + elRect.height };
+                    case 'left': return { x: x, y: y + elRect.height / 2 };
+                    case 'right': return { x: x + elRect.width, y: y + elRect.height / 2 };
+                    default: return { x: x, y: y };
+                }
+            };
+
+            const drawLine = (startEl, startSide, endEl, endSide, startMarker, endMarker, isDashed = false) => {
+                const p1 = getAttachPoint(startEl, startSide);
+                const p2 = getAttachPoint(endEl, endSide);
+                
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', p1.x);
+                line.setAttribute('y1', p1.y);
+                line.setAttribute('x2', p2.x);
+                line.setAttribute('y2', p2.y);
+                line.setAttribute('stroke', '#34495e');
+                line.setAttribute('stroke-width', '2');
+                if (startMarker) line.setAttribute('marker-start', `url(#${startMarker})`);
+                if (endMarker) line.setAttribute('marker-end', `url(#${endMarker})`);
+                if(isDashed) line.setAttribute('stroke-dasharray', '5 5');
+
+                svg.appendChild(line);
+            };
+            
+            const drawSelfRef = (elId, offset = 40) => {
+                 const p1 = getAttachPoint(elId, 'top');
+                 const p2 = getAttachPoint(elId, 'left');
+                 const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                 const d = `M ${p1.x} ${p1.y} V ${p1.y - offset} H ${p2.x - offset} V ${p2.y}`;
+                 path.setAttribute('d', d);
+                 path.setAttribute('stroke', '#34495e');
+                 path.setAttribute('stroke-width', '2');
+                 path.setAttribute('fill', 'none');
+                 path.setAttribute('marker-end', `url(#many-marker)`);
+                 svg.appendChild(path);
+            };
+
+            // --- Draw Relationships ---
+
+            // User -> Posts (One to Many)
+            drawLine('users', 'left', 'posts', 'right', 'one-marker', 'many-marker');
+            
+            // User -> Connections (One user is in Many connections)
+            drawLine('users', 'top', 'connections', 'bottom', 'one-marker', 'many-marker');
+
+            // User -> Conversations (Many Users participate in Many conversations)
+            drawLine('users', 'right', 'conversations', 'left', 'many-marker', 'many-marker');
+
+            // User -> Messages (One User sends Many messages)
+            drawLine('users', 'right', 'messages', 'left', 'one-marker', 'many-marker');
+
+            // User -> Comments (One User writes Many comments)
+            drawLine('users', 'bottom', 'comments', 'right', 'one-marker', 'many-marker');
+
+             // User -> Likes (One User gives Many likes)
+            drawLine('users', 'bottom', 'likes', 'right', 'one-marker', 'many-marker');
+            
+            // Post -> Comments (One Post has Many comments)
+            drawLine('posts', 'left', 'comments', 'right', 'one-marker', 'many-marker');
+
+            // Post -> Likes (Polymorphic: One Post has Many likes)
+            drawLine('posts', 'bottom', 'likes', 'top', 'one-marker', 'many-marker');
+            
+            // Comment -> Likes (Polymorphic: One Comment has Many likes)
+            drawLine('comments', 'bottom', 'likes', 'top', 'one-marker', 'many-marker');
+
+            // Comment -> Comment (Self-referencing for replies)
+            drawSelfRef('comments');
+
+            // Conversation -> Messages (One Conversation has Many messages)
+            drawLine('conversations', 'right', 'messages', 'left', 'one-marker', 'many-marker');
+
+            // Embedded Documents
+            drawLine('users', 'bottom', 'experience', 'top', null, null, true);
+            drawLine('users', 'bottom', 'education', 'top', null, null, true);
+        });
+    </script>
+</body>
+</html>
